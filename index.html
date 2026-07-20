@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>협력사 안전서류 통합 관리 시스템</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2/dist/tabler-icons.min.css">
+<style>
+  :root {
+    --surface-0:#f7f6f3; --surface-1:#f1efe8; --surface-2:#ffffff;
+    --text-primary:#1a1a18; --text-secondary:#5f5e5a; --text-muted:#8a8880;
+    --border:#e3e1d8; --border-strong:#c9c7bd; --radius:8px;
+    --bg-accent:#e5f0f8; --text-accent:#00558c;
+    --hansol-blue:#0072bc; --hansol-green:#4c9a2a;
+    --bg-success:#eaf3de; --text-success:#27500a;
+    --bg-warning:#faeeda; --text-warning:#633806;
+    --bg-danger:#fcebeb; --text-danger:#791f1f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --surface-0:#1c1c1a; --surface-1:#26251f; --surface-2:#2c2b26;
+      --text-primary:#f1efe8; --text-secondary:#c2c0b6; --text-muted:#8a8880;
+      --border:#3a382f; --border-strong:#4a4840;
+      --bg-accent:#0c3a5c; --text-accent:#7fc0f0;
+      --hansol-blue:#4b9fd8; --hansol-green:#7ac25a;
+      --bg-success:#27500a; --text-success:#c0dd97;
+      --bg-warning:#633806; --text-warning:#fac775;
+      --bg-danger:#791f1f; --text-danger:#f7c1c1;
+    }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:32px; background:var(--surface-0); font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; color:var(--text-primary); font-size:13px; }
+  .layout { display:flex; gap:20px; max-width:960px; margin:0 auto; }
+  .nav { width:160px; flex-shrink:0; display:flex; flex-direction:column; gap:2px; }
+  .navlabel { font-size:12px; color:var(--text-muted); padding:4px 8px 10px; }
+  .navitem { display:flex; align-items:center; gap:8px; padding:8px; border-radius:var(--radius); cursor:pointer; color:var(--text-secondary); }
+  .navitem:hover { background:var(--surface-1); }
+  .navitem.active { background:var(--bg-accent); color:var(--hansol-blue); font-weight:500; }
+  .brandbar { display:flex; align-items:center; gap:10px; margin-bottom:22px; }
+  .brandmark { display:flex; flex-direction:column; gap:2px; }
+  .brandmark div { width:22px; height:7px; border-radius:1px; }
+  button.primary { background:var(--hansol-blue); border-color:var(--hansol-blue); color:#fff; }
+  button.primary:hover { opacity:0.9; background:var(--hansol-blue); }
+  .main { flex:1; min-width:0; }
+  .screen { display:none; flex-direction:column; gap:16px; }
+  .screen.active { display:flex; }
+  .card { background:var(--surface-2); border:0.5px solid var(--border); border-radius:12px; padding:1rem 1.25rem; }
+  select, textarea, input { border-radius:var(--radius); border:0.5px solid var(--border-strong); background:var(--surface-2); color:var(--text-primary); padding:8px 10px; font-family:inherit; font-size:13px; }
+  textarea { width:100%; resize:vertical; }
+  button { height:36px; border-radius:var(--radius); border:0.5px solid var(--border-strong); background:var(--surface-2); color:var(--text-primary); padding:0 14px; cursor:pointer; font-size:13px; }
+  button:hover { background:var(--surface-1); }
+  table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  th { background:var(--surface-1); color:var(--text-secondary); text-align:left; padding:10px 12px; font-weight:400; }
+  td { padding:10px 12px; border-top:0.5px solid var(--border); }
+  .badge { padding:2px 10px; border-radius:var(--radius); font-size:12px; }
+  .kpi { background:var(--surface-1); border-radius:var(--radius); padding:12px 14px; }
+  .kpi .label { font-size:12px; color:var(--text-secondary); }
+  .kpi .value { font-size:24px; font-weight:500; margin-top:2px; }
+  ul.plain { margin:0; padding-left:18px; color:var(--text-secondary); line-height:1.7; }
+  .h { font-size:15px; font-weight:500; }
+</style>
+</head>
+<body>
+
+<div class="layout" style="flex-direction:column;max-width:960px">
+<div class="brandbar">
+  <div class="brandmark"><div style="background:var(--hansol-blue)"></div><div style="background:var(--hansol-green)"></div></div>
+  <div style="font-size:15px;font-weight:500">한솔제지 협력사 안전서류 통합관리</div>
+</div>
+<div style="display:flex;gap:20px">
+
+
+  <div class="nav">
+    <div class="navlabel">AGENT 메뉴</div>
+    <div class="navitem active" data-screen="dashboard" onclick="showScreen('dashboard')"><i class="ti ti-chart-bar"></i>현황판</div>
+    <div class="navitem" data-screen="format" onclick="showScreen('format')"><i class="ti ti-clipboard-check"></i>형식확인</div>
+    <div class="navitem" data-screen="content" onclick="showScreen('content')"><i class="ti ti-file-search"></i>내용검토</div>
+    <div class="navitem" data-screen="law" onclick="showScreen('law')"><i class="ti ti-scale"></i>법률검토</div>
+    <div class="navitem" data-screen="request" onclick="showScreen('request')"><i class="ti ti-mail"></i>보완요청</div>
+  </div>
+
+  <div class="main">
+
+    <div class="screen active" id="screen-dashboard">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="h">협력사 안전서류 통합 현황</div>
+        <select><option>마인플랜트 PM31·32 ASA 공사</option></select>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+        <div class="kpi"><div class="label">오늘 접수</div><div class="value">4건</div></div>
+        <div class="kpi"><div class="label">검토대기</div><div class="value" style="color:var(--text-warning)">7건</div></div>
+        <div class="kpi"><div class="label">보완요청 발송</div><div class="value" style="color:var(--text-danger)">2건</div></div>
+        <div class="kpi"><div class="label">승인완료</div><div class="value" style="color:var(--text-success)">21건</div></div>
+      </div>
+
+      <div class="card" style="padding:14px 18px">
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--text-secondary);margin-bottom:6px">
+          <span>19개 문서그룹 중 12건 완료</span><span>63%</span>
+        </div>
+        <div style="height:6px;background:var(--surface-1);border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:63%;background:var(--hansol-blue)"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;align-items:center">
+        <input placeholder="문서명 또는 서식번호 검색" style="flex:1">
+        <select style="width:120px"><option>전체 상태</option><option>검토대기</option><option>보완요청됨</option><option>승인완료</option></select>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <table>
+          <tr><th>문서</th><th>접수일</th><th style="text-align:center">형식</th><th style="text-align:center">내용</th><th style="text-align:center">법률</th><th>상태</th></tr>
+          <tr>
+            <td>① 안전관리계획서(갑지)</td><td>07/18</td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td><span class="badge" style="background:var(--bg-success);color:var(--text-success)">승인대기</span></td>
+          </tr>
+          <tr>
+            <td>② 수급업체 공사허가신청</td><td>07/18</td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td><span class="badge" style="background:var(--bg-success);color:var(--text-success)">1차승인완료</span></td>
+          </tr>
+          <tr>
+            <td>③ 고용·산재보험 가입증명원</td><td>07/18</td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-warning)"><i class="ti ti-clock"></i><div style="font-size:11px">검토중</div></div></td>
+            <td><span class="badge" style="background:var(--bg-warning);color:var(--text-warning)">법률검토중</span></td>
+          </tr>
+          <tr>
+            <td>④ 공사일정·인원투입현황</td><td>07/17</td>
+            <td style="text-align:center"><div style="color:var(--text-danger)"><i class="ti ti-x"></i><div style="font-size:11px">미비</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-muted)">－<div style="font-size:11px">대기</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-muted)">－<div style="font-size:11px">대기</div></div></td>
+            <td><span class="badge" style="background:var(--bg-danger);color:var(--text-danger)">보완요청됨</span></td>
+          </tr>
+          <tr>
+            <td>⑤ 현장대리인 선임계</td><td>07/17</td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td><span class="badge" style="background:var(--bg-success);color:var(--text-success)">승인완료</span></td>
+          </tr>
+          <tr>
+            <td>⑥ 안전관리조직체계</td><td>07/17</td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td><span class="badge" style="background:var(--bg-success);color:var(--text-success)">승인완료</span></td>
+          </tr>
+          <tr>
+            <td>⑦ 최초 안전회의록</td><td>07/18</td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-warning)"><i class="ti ti-clock"></i><div style="font-size:11px">검토중</div></div></td>
+            <td><span class="badge" style="background:var(--bg-warning);color:var(--text-warning)">법률검토중</span></td>
+          </tr>
+          <tr>
+            <td>⑧ 안전교육 참석대장</td><td>07/16</td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td><span class="badge" style="background:var(--bg-success);color:var(--text-success)">승인완료</span></td>
+          </tr>
+          <tr>
+            <td>⑨ JSA 위험성평가</td><td>07/18</td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-warning)"><i class="ti ti-clock"></i><div style="font-size:11px">검토중</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-muted)">－<div style="font-size:11px">대기</div></div></td>
+            <td><span class="badge" style="background:var(--bg-warning);color:var(--text-warning)">내용검토중</span></td>
+          </tr>
+          <tr>
+            <td>⑮ 작업계획서 및 세부내용</td><td>07/18</td>
+            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-warning)"><i class="ti ti-clock"></i><div style="font-size:11px">검토중</div></div></td>
+            <td style="text-align:center"><div style="color:var(--text-muted)">－<div style="font-size:11px">대기</div></div></td>
+            <td><span class="badge" style="background:var(--bg-warning);color:var(--text-warning)">내용검토중</span></td>
+          </tr>
+        </table>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-muted)">
+        <span>1–10 / 19건 표시</span>
+        <span>내용검토 단계 평균 소요 12.9분 · 전체 병목 구간</span>
+      </div>
+    </div>
+
+
+    <div class="screen" id="screen-format">
+      <div class="h">형식확인 챗봇 — ④ 공사일정 및 인원투입현황 (서식3)</div>
+      <div class="card">
+        <div style="font-weight:500;margin-bottom:10px">형식 체크리스트 결과</div>
+        <table>
+          <tr style="color:var(--text-secondary)"><td>확인 항목</td><td style="text-align:right">결과</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>작업명 기재 여부</td><td style="text-align:right;color:var(--text-success)">통과</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>위험요인 기재 여부</td><td style="text-align:right;color:var(--text-success)">통과</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>투입인원 기재 여부</td><td style="text-align:right;color:var(--text-danger)">누락</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>일정(화살표 표기) 기재 여부</td><td style="text-align:right;color:var(--text-success)">통과</td></tr>
+        </table>
+      </div>
+      <div class="card" style="background:var(--bg-danger)">
+        <div style="color:var(--text-danger);font-weight:500;margin-bottom:6px">형식 미비 발견</div>
+        <div style="color:var(--text-danger)">투입인원 항목이 비어있습니다. 협력사 재제출이 필요합니다.</div>
+      </div>
+      <div><button onclick="showScreen('request')">보완요청 초안 만들기</button></div>
+    </div>
+
+    <div class="screen" id="screen-content">
+      <div class="h">내용검토 챗봇 — ⑨ 위험작업 위험성평가(JSA) (서식12)</div>
+      <div class="card">
+        <div style="font-weight:500;margin-bottom:10px">위험도 점수 (빈도 × 강도)</div>
+        <table>
+          <tr style="color:var(--text-secondary)"><td>작업</td><td style="text-align:center">개선 전</td><td style="text-align:center">개선 후</td><td>개선방향</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>고소작업(탱크 상부)</td><td style="text-align:center;color:var(--text-danger)">4×4=16</td><td style="text-align:center;color:var(--text-success)">4×2=8</td><td>아웃트리거 설치</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>화기작업(용접)</td><td style="text-align:center;color:var(--text-danger)">3×5=15</td><td style="text-align:center;color:var(--text-success)">3×2=6</td><td>화재감시자 배치</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>중량물 인양</td><td style="text-align:center;color:var(--text-warning)">3×3=9</td><td style="text-align:center;color:var(--text-success)">2×3=6</td><td>신호수 배치</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <div style="font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:6px"><i class="ti ti-sparkles" style="color:var(--text-accent)"></i>AI 검토 코멘트</div>
+        <ul class="plain">
+          <li>세 항목 모두 개선 후 위험도가 유의미하게 낮아짐 — 기준 충족</li>
+          <li>고소·화기 작업 개선방향이 실제 위험요인에 직접 대응함</li>
+          <li>중량물 인양 개선방향이 서식22 인양하중 기재와 교차확인 필요 — 서식22 미제출</li>
+        </ul>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="primary" onclick="showScreen('law')">내용검토 통과 처리</button>
+        <button onclick="showScreen('request')">보완요청 (서식22 대조 필요)</button>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-law">
+      <div class="h">법률검토 챗봇 — ⑨ JSA (서식12)</div>
+      <div class="card">
+        <div style="font-weight:500;margin-bottom:8px">질의</div>
+        <div style="color:var(--text-secondary)">이 JSA가 위험성평가 실시의무 및 중대재해처벌법상 안전보건 확보의무를 충족하는지 확인해줘.</div>
+      </div>
+      <div class="card">
+        <div style="font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:6px"><i class="ti ti-sparkles" style="color:var(--text-accent)"></i>AI 답변</div>
+        <div style="color:var(--text-secondary);line-height:1.7">
+          산업안전보건법상 위험성평가 실시 의무는 위험요인 식별과 개선조치 기록으로 충족되며, 이 문서의 개선 전/후 점수 기록이 이에 해당합니다.<br><br>
+          중대재해처벌법 시행령상 안전보건 확보의무는 유해위험요인의 확인·개선 절차가 마련되어 있는지를 봅니다. 본 JSA는 절차 자체는 충족하나, 서식22와의 교차확인이 완료되지 않아 최종 승인 전 확인이 필요합니다.
+        </div>
+        <div style="margin-top:10px;padding:8px 10px;background:var(--surface-1);border-radius:var(--radius);font-size:12px;color:var(--text-muted)">
+          참고 조문: 산업안전보건법 제36조, 중대재해처벌법 시행령 제4조 (법제처 API 연계, 최종 확인은 법무팀 권고)
+        </div>
+      </div>
+      <div><button class="primary" onclick="showScreen('dashboard')">법률검토 통과 → 승인단계 이관</button></div>
+    </div>
+
+    <div class="screen" id="screen-request">
+      <div class="h">보완요청 자동생성 에이전트</div>
+      <div class="card">
+        <div style="font-weight:500;margin-bottom:8px">대상 문서</div>
+        <select style="width:100%"><option>④ 공사일정 및 인원투입현황 (서식3) — 투입인원 누락</option></select>
+      </div>
+      <div class="card">
+        <div style="font-weight:500;margin-bottom:8px">보완요청 공문 초안</div>
+        <textarea rows="9">수신: (주)마인플랜트 현장대리인 귀하
+
+제목: 안전서류 보완요청 (서식3 공사일정 및 인원투입현황)
+
+귀 사가 제출하신 서식3(공사일정 및 인원투입현황)을 검토한 결과, 다음 사항이 누락되어 보완을 요청드립니다.
+
+- 누락 항목: 투입인원 기재란
+- 요청 사항: 작업 단계별 투입인원을 명확히 기재하여 재제출 바랍니다.
+- 재제출 기한: 공사 착수 3일 전까지
+
+문의사항은 담당 안전관리자에게 연락 바랍니다.</textarea>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="primary">공문 발송</button>
+        <button onclick="showScreen('dashboard')">임시저장 후 현황판으로</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.querySelectorAll('.navitem').forEach(function(n) { n.classList.remove('active'); });
+  document.getElementById('screen-' + name).classList.add('active');
+  document.querySelector('.navitem[data-screen="' + name + '"]').classList.add('active');
+}
+</script>
+</body>
+</html>
