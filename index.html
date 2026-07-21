@@ -14,6 +14,11 @@
     --bg-success:#eaf3de; --text-success:#27500a;
     --bg-warning:#faeeda; --text-warning:#633806;
     --bg-danger:#fcebeb; --text-danger:#791f1f;
+    --stage-intake:#c9c2a8; --stage-intake-bg:#f2ede0;
+    --stage-ai:#5b93c9; --stage-ai-bg:#e5f0f8;
+    --stage-review:#4c9a2a; --stage-review-bg:#e8f2df;
+    --stage-log:#7d6bb0; --stage-log-bg:#eeeafa;
+    --stage-hard:#c96b3e; --stage-hard-bg:#fbeee5;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -25,16 +30,24 @@
       --bg-success:#27500a; --text-success:#c0dd97;
       --bg-warning:#633806; --text-warning:#fac775;
       --bg-danger:#791f1f; --text-danger:#f7c1c1;
+      --stage-intake:#8a8368; --stage-intake-bg:#2c2a22;
+      --stage-ai:#4b9fd8; --stage-ai-bg:#123249;
+      --stage-review:#7ac25a; --stage-review-bg:#1f3612;
+      --stage-log:#a695e0; --stage-log-bg:#241f38;
+      --stage-hard:#e08a5e; --stage-hard-bg:#3a2417;
     }
   }
   * { box-sizing:border-box; }
   body { margin:0; padding:32px; background:var(--surface-0); font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; color:var(--text-primary); font-size:13px; }
-  .layout { display:flex; gap:20px; max-width:960px; margin:0 auto; }
-  .nav { width:160px; flex-shrink:0; display:flex; flex-direction:column; gap:2px; }
-  .navlabel { font-size:12px; color:var(--text-muted); padding:4px 8px 10px; }
-  .navitem { display:flex; align-items:center; gap:8px; padding:8px; border-radius:var(--radius); cursor:pointer; color:var(--text-secondary); }
+  .layout { display:flex; gap:20px; max-width:1080px; margin:0 auto; }
+  .nav { width:190px; flex-shrink:0; display:flex; flex-direction:column; gap:2px; }
+  .navlabel { font-size:11px; color:var(--text-muted); padding:10px 8px 6px; letter-spacing:.03em; }
+  .navitem { display:flex; align-items:center; gap:8px; padding:7px 8px; border-radius:var(--radius); cursor:pointer; color:var(--text-secondary); font-size:12.5px; }
   .navitem:hover { background:var(--surface-1); }
   .navitem.active { background:var(--bg-accent); color:var(--hansol-blue); font-weight:500; }
+  .navitem .stepnum { min-width:20px; height:16px; padding:0 4px; border-radius:8px; font-size:9px; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:var(--surface-1); color:var(--text-muted); }
+  .navitem.active .stepnum { background:var(--hansol-blue); color:#fff; }
+  .navitem.sub { padding-left:20px; }
   .brandbar { display:flex; align-items:center; gap:10px; margin-bottom:22px; }
   .brandmark { display:flex; flex-direction:column; gap:2px; }
   .brandmark div { width:22px; height:7px; border-radius:1px; }
@@ -48,35 +61,60 @@
   textarea { width:100%; resize:vertical; }
   button { height:36px; border-radius:var(--radius); border:0.5px solid var(--border-strong); background:var(--surface-2); color:var(--text-primary); padding:0 14px; cursor:pointer; font-size:13px; }
   button:hover { background:var(--surface-1); }
-  table { width:100%; border-collapse:collapse; font-size:12.5px; }
-  th { background:var(--surface-1); color:var(--text-secondary); text-align:left; padding:10px 12px; font-weight:400; }
-  td { padding:10px 12px; border-top:0.5px solid var(--border); }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th { background:var(--surface-1); color:var(--text-secondary); text-align:left; padding:9px 10px; font-weight:400; }
+  td { padding:9px 10px; border-top:0.5px solid var(--border); }
   .badge { padding:2px 10px; border-radius:var(--radius); font-size:12px; }
   .kpi { background:var(--surface-1); border-radius:var(--radius); padding:12px 14px; }
   .kpi .label { font-size:12px; color:var(--text-secondary); }
   .kpi .value { font-size:24px; font-weight:500; margin-top:2px; }
   ul.plain { margin:0; padding-left:18px; color:var(--text-secondary); line-height:1.7; }
   .h { font-size:15px; font-weight:500; }
+  .sub { font-size:12px; color:var(--text-muted); margin-top:-10px; }
+
+  .stepper { display:flex; align-items:center; gap:0; overflow-x:auto; padding-bottom:4px; }
+  .step { display:flex; flex-direction:column; align-items:center; gap:5px; min-width:66px; flex-shrink:0; }
+  .step .dot { min-width:24px; height:24px; padding:0 4px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; border:1.5px solid var(--border-strong); color:var(--text-muted); background:var(--surface-2); }
+  .step .lbl { font-size:10px; color:var(--text-muted); text-align:center; line-height:1.3; }
+  .step.done .dot { background:var(--stage-review-bg); border-color:var(--stage-review); color:var(--stage-review); }
+  .step.current .dot { background:var(--hansol-blue); border-color:var(--hansol-blue); color:#fff; }
+  .step.current .lbl { color:var(--text-primary); font-weight:500; }
+  .steplink { flex:1; height:1.5px; background:var(--border-strong); margin:0 -2px 20px; min-width:6px; }
+  .steplink.done { background:var(--stage-review); }
+
+  .stagepill { display:inline-flex; align-items:center; gap:6px; font-size:11px; padding:3px 10px 3px 6px; border-radius:20px; }
+  .stagepill .n { min-width:16px; height:16px; padding:0 3px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:600; color:#fff; }
 </style>
 </head>
 <body>
 
-<div class="layout" style="flex-direction:column;max-width:960px">
+<div class="layout" style="flex-direction:column;max-width:1080px">
 <div class="brandbar">
   <div class="brandmark"><div style="background:var(--hansol-blue)"></div><div style="background:var(--hansol-green)"></div></div>
-  <div style="font-size:15px;font-weight:500">한솔제지 협력사 안전서류 통합관리</div>
+  <div style="font-size:15px;font-weight:500">한솔제지 협력사 안전서류 통합관리 · PHASE 3</div>
 </div>
 <div style="display:flex;gap:20px">
 
-
   <div class="nav">
-    <div class="navlabel">AGENT 메뉴</div>
+    <div class="navlabel">전체현황</div>
     <div class="navitem active" data-screen="dashboard" onclick="showScreen('dashboard')"><span>📊</span>현황판</div>
-    <div class="navitem" data-screen="upload" onclick="showScreen('upload')"><span>📤</span>안전관리계획서 업로드</div>
-    <div class="navitem" data-screen="format" onclick="showScreen('format')"><span>📋</span>형식확인</div>
-    <div class="navitem" data-screen="content" onclick="showScreen('content')"><span>🔍</span>내용검토</div>
-    <div class="navitem" data-screen="law" onclick="showScreen('law')"><span>⚖️</span>법률검토</div>
-    <div class="navitem" data-screen="request" onclick="showScreen('request')"><span>✉️</span>보완요청</div>
+
+    <div class="navlabel">MENU</div>
+    <div class="navitem" data-screen="s1" onclick="showScreen('s1')"><span class="stepnum">1</span>협력사 문서 접수</div>
+
+    <div class="navitem" data-screen="s2_1" onclick="showScreen('s2_1')"><span class="stepnum">2-1</span>형식 확인 (AI)</div>
+    <div class="navitem" data-screen="s2_2" onclick="showScreen('s2_2')"><span class="stepnum">2-2</span>내용(위험성) 검토 (AI)</div>
+    <div class="navitem" data-screen="s2_3" onclick="showScreen('s2_3')"><span class="stepnum">2-3</span>법무 검토 (AI)</div>
+
+    <div class="navitem" data-screen="s3" onclick="showScreen('s3')"><span class="stepnum">3</span>안전관리계획서 검토</div>
+    <div class="navitem" data-screen="s4" onclick="showScreen('s4')"><span class="stepnum">4</span>1차 승인 (현업 PL)</div>
+    <div class="navitem" data-screen="s5" onclick="showScreen('s5')"><span class="stepnum">5</span>2차 승인 (안전보건 PL)</div>
+    <div class="navitem" data-screen="s6" onclick="showScreen('s6')"><span class="stepnum">6</span>정합성 확보</div>
+    <div class="navitem" data-screen="s78" onclick="showScreen('s78')"><span class="stepnum">7</span>승인정보·PDF저장</div>
+    <div class="navitem" data-screen="s9" onclick="showScreen('s9')"><span class="stepnum">8</span>출력</div>
+
+    <div class="navlabel">보완 루프</div>
+    <div class="navitem" data-screen="request" onclick="showScreen('request')"><span>↺</span>보완요청</div>
   </div>
 
   <div class="main">
@@ -86,11 +124,37 @@
         <div class="h">협력사 안전서류 통합 현황</div>
         <select><option>마인플랜트 PM31·32 ASA 공사</option></select>
       </div>
+
+      <div class="card" style="padding:14px 18px">
+        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px">TO-BE 프로세스 진행 단계</div>
+        <div class="stepper">
+          <div class="step done"><div class="dot"><i class="ti ti-check"></i></div><div class="lbl">계획-1<br>문서접수</div></div>
+          <div class="steplink done"></div>
+          <div class="step done"><div class="dot"><i class="ti ti-check"></i></div><div class="lbl">2-1<br>형식확인</div></div>
+          <div class="steplink done"></div>
+          <div class="step current"><div class="dot">2-2</div><div class="lbl">내용(위험성)<br>검토</div></div>
+          <div class="steplink"></div>
+          <div class="step"><div class="dot">2-3</div><div class="lbl">법무<br>검토</div></div>
+          <div class="steplink"></div>
+          <div class="step"><div class="dot">3</div><div class="lbl">현업<br>검토</div></div>
+          <div class="steplink"></div>
+          <div class="step"><div class="dot">4</div><div class="lbl">1차<br>승인</div></div>
+          <div class="steplink"></div>
+          <div class="step"><div class="dot">5</div><div class="lbl">2차<br>승인</div></div>
+          <div class="steplink"></div>
+          <div class="step"><div class="dot">6</div><div class="lbl">정합성<br>확보</div></div>
+          <div class="steplink"></div>
+          <div class="step"><div class="dot">7</div><div class="lbl">로그·<br>저장</div></div>
+          <div class="steplink"></div>
+          <div class="step"><div class="dot">8</div><div class="lbl">출력</div></div>
+        </div>
+      </div>
+
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
         <div class="kpi"><div class="label">오늘 접수</div><div class="value">4건</div></div>
-        <div class="kpi"><div class="label">검토대기</div><div class="value" style="color:var(--text-warning)">7건</div></div>
+        <div class="kpi"><div class="label">검토·승인 대기</div><div class="value" style="color:var(--text-warning)">7건</div></div>
         <div class="kpi"><div class="label">보완요청 발송</div><div class="value" style="color:var(--text-danger)">2건</div></div>
-        <div class="kpi"><div class="label">승인완료</div><div class="value" style="color:var(--text-success)">21건</div></div>
+        <div class="kpi"><div class="label">정합성 확보 완료</div><div class="value" style="color:var(--text-success)">21건</div></div>
       </div>
 
       <div class="card" style="padding:14px 18px">
@@ -104,93 +168,85 @@
 
       <div style="display:flex;gap:8px;align-items:center">
         <input placeholder="문서명 또는 서식번호 검색" style="flex:1">
-        <select style="width:120px"><option>전체 상태</option><option>검토대기</option><option>보완요청됨</option><option>승인완료</option></select>
+        <select style="width:150px"><option>전체 단계</option><option>형식확인</option><option>내용검토</option><option>법무검토</option><option>현업검토</option><option>1차승인</option><option>2차승인</option></select>
       </div>
 
-      <div class="card" style="padding:0;overflow:hidden">
+      <div class="card" style="padding:0;overflow:auto">
         <table>
-          <tr><th>문서</th><th>접수일</th><th style="text-align:center">형식</th><th style="text-align:center">내용</th><th style="text-align:center">법률</th><th>상태</th></tr>
+          <tr><th>문서</th><th>접수일</th><th style="text-align:center">형식</th><th style="text-align:center">내용</th><th style="text-align:center">법무</th><th style="text-align:center">현업</th><th style="text-align:center">1차</th><th style="text-align:center">2차</th><th>단계</th></tr>
           <tr>
             <td>① 안전관리계획서(갑지)</td><td>07/18</td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td><span class="badge" style="background:var(--bg-success);color:var(--text-success)">승인대기</span></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-warning)"><i class="ti ti-clock"></i></td>
+            <td><span class="badge" style="background:var(--bg-warning);color:var(--text-warning)">2차승인 대기</span></td>
           </tr>
           <tr>
             <td>② 수급업체 공사허가신청</td><td>07/18</td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td><span class="badge" style="background:var(--bg-success);color:var(--text-success)">1차승인완료</span></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td><span class="badge" style="background:var(--bg-success);color:var(--text-success)">정합성확보 완료</span></td>
           </tr>
           <tr>
             <td>③ 고용·산재보험 가입증명원</td><td>07/18</td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-warning)"><i class="ti ti-clock"></i><div style="font-size:11px">검토중</div></div></td>
-            <td><span class="badge" style="background:var(--bg-warning);color:var(--text-warning)">법률검토중</span></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-warning)"><i class="ti ti-clock"></i></td>
+            <td style="text-align:center;color:var(--text-muted)">－</td>
+            <td style="text-align:center;color:var(--text-muted)">－</td>
+            <td style="text-align:center;color:var(--text-muted)">－</td>
+            <td style="text-align:center;color:var(--text-muted)">－</td>
+            <td><span class="badge" style="background:var(--bg-warning);color:var(--text-warning)">내용검토중</span></td>
           </tr>
           <tr>
             <td>④ 공사일정·인원투입현황</td><td>07/17</td>
-            <td style="text-align:center"><div style="color:var(--text-danger)"><i class="ti ti-x"></i><div style="font-size:11px">미비</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-muted)">－<div style="font-size:11px">대기</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-muted)">－<div style="font-size:11px">대기</div></div></td>
+            <td style="text-align:center;color:var(--text-danger)"><i class="ti ti-x"></i></td>
+            <td style="text-align:center;color:var(--text-muted)">－</td>
+            <td style="text-align:center;color:var(--text-muted)">－</td>
+            <td style="text-align:center;color:var(--text-muted)">－</td>
+            <td style="text-align:center;color:var(--text-muted)">－</td>
+            <td style="text-align:center;color:var(--text-muted)">－</td>
             <td><span class="badge" style="background:var(--bg-danger);color:var(--text-danger)">보완요청됨</span></td>
           </tr>
           <tr>
             <td>⑤ 현장대리인 선임계</td><td>07/17</td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td><span class="badge" style="background:var(--bg-success);color:var(--text-success)">승인완료</span></td>
-          </tr>
-          <tr>
-            <td>⑥ 안전관리조직체계</td><td>07/17</td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td><span class="badge" style="background:var(--bg-success);color:var(--text-success)">승인완료</span></td>
-          </tr>
-          <tr>
-            <td>⑦ 최초 안전회의록</td><td>07/18</td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-warning)"><i class="ti ti-clock"></i><div style="font-size:11px">검토중</div></div></td>
-            <td><span class="badge" style="background:var(--bg-warning);color:var(--text-warning)">법률검토중</span></td>
-          </tr>
-          <tr>
-            <td>⑧ 안전교육 참석대장</td><td>07/16</td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td><span class="badge" style="background:var(--bg-success);color:var(--text-success)">승인완료</span></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td><span class="badge" style="background:var(--bg-success);color:var(--text-success)">정합성확보 완료</span></td>
           </tr>
           <tr>
             <td>⑨ JSA 위험성평가</td><td>07/18</td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-warning)"><i class="ti ti-clock"></i><div style="font-size:11px">검토중</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-muted)">－<div style="font-size:11px">대기</div></div></td>
-            <td><span class="badge" style="background:var(--bg-warning);color:var(--text-warning)">내용검토중</span></td>
-          </tr>
-          <tr>
-            <td>⑮ 작업계획서 및 세부내용</td><td>07/18</td>
-            <td style="text-align:center"><div style="color:var(--text-success)"><i class="ti ti-check"></i><div style="font-size:11px">통과</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-warning)"><i class="ti ti-clock"></i><div style="font-size:11px">검토중</div></div></td>
-            <td style="text-align:center"><div style="color:var(--text-muted)">－<div style="font-size:11px">대기</div></div></td>
-            <td><span class="badge" style="background:var(--bg-warning);color:var(--text-warning)">내용검토중</span></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-warning)"><i class="ti ti-clock"></i></td>
+            <td style="text-align:center;color:var(--text-muted)">－</td>
+            <td style="text-align:center;color:var(--text-muted)">－</td>
+            <td style="text-align:center;color:var(--text-muted)">－</td>
+            <td><span class="badge" style="background:var(--bg-warning);color:var(--text-warning)">법무검토중</span></td>
           </tr>
         </table>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-muted)">
-        <span>1–10 / 19건 표시</span>
-        <span>내용검토 단계 평균 소요 12.9분 · 전체 병목 구간</span>
+        <span>1–6 / 19건 표시</span>
+        <span>내용(위험성)검토(2-2) 단계 평균 소요 12.9분 · 전체 병목 구간</span>
       </div>
     </div>
 
 
-    <div class="screen" id="screen-upload">
-      <div class="h">안전관리계획서 업로드</div>
+    <div class="screen" id="screen-s1">
+      <div class="stagepill" style="background:var(--stage-intake-bg);color:var(--stage-intake)"><span class="n" style="background:var(--stage-intake)">1</span>계획-1 · 협력사 문서 접수</div>
+      <div class="h">협력사 문서 접수</div>
+      <div class="sub">안전관리계획서 외 31종</div>
 
       <div class="card" style="border:1.5px dashed var(--border-strong);text-align:center;padding:28px 20px">
         <i class="ti ti-cloud-upload" style="font-size:28px;color:var(--text-muted)"></i>
@@ -202,7 +258,7 @@
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
           <div style="font-weight:500">업로드된 서류 (4/32)</div>
-          <button class="primary" onclick="showScreen('format')">분석 시작</button>
+          <button class="primary" onclick="showScreen('s2_1')">정합성 검토(AI) 시작 →</button>
         </div>
         <table>
           <tr style="color:var(--text-secondary)"><td>파일명</td><td>인식된 서식</td><td style="text-align:right">상태</td></tr>
@@ -214,8 +270,12 @@
       </div>
     </div>
 
-    <div class="screen" id="screen-format">
+
+    <div class="screen" id="screen-s2_1">
+      <div class="stagepill" style="background:var(--stage-ai-bg);color:var(--stage-ai)"><span class="n" style="background:var(--stage-ai)">2-1</span>계획-2 · 정합성 검토(AI) — 형식 확인</div>
       <div class="h">형식확인 챗봇 — ④ 공사일정 및 인원투입현황 (서식3)</div>
+      <div class="sub">서식·기재항목 자동 판단</div>
+
       <div class="card">
         <div style="font-weight:500;margin-bottom:10px">형식 체크리스트 결과</div>
         <table>
@@ -224,17 +284,25 @@
           <tr style="border-top:0.5px solid var(--border)"><td>위험요인 기재 여부</td><td style="text-align:right;color:var(--text-success)">통과</td></tr>
           <tr style="border-top:0.5px solid var(--border)"><td>투입인원 기재 여부</td><td style="text-align:right;color:var(--text-danger)">누락</td></tr>
           <tr style="border-top:0.5px solid var(--border)"><td>일정(화살표 표기) 기재 여부</td><td style="text-align:right;color:var(--text-success)">통과</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>서명·날인 여부</td><td style="text-align:right;color:var(--text-success)">통과</td></tr>
         </table>
       </div>
       <div class="card" style="background:var(--bg-danger)">
         <div style="color:var(--text-danger);font-weight:500;margin-bottom:6px">형식 미비 발견</div>
         <div style="color:var(--text-danger)">투입인원 항목이 비어있습니다. 협력사 재제출이 필요합니다.</div>
       </div>
-      <div><button onclick="showScreen('request')">보완요청 초안 만들기</button></div>
+      <div style="display:flex;gap:8px">
+        <button class="primary" onclick="showScreen('s2_2')">통과 처리 → 내용(위험성) 검토로</button>
+        <button onclick="showScreen('request')">보완요청 초안 만들기</button>
+      </div>
     </div>
 
-    <div class="screen" id="screen-content">
-      <div class="h">내용검토 챗봇 — ⑨ 위험작업 위험성평가(JSA) (서식12)</div>
+
+    <div class="screen" id="screen-s2_2">
+      <div class="stagepill" style="background:var(--stage-ai-bg);color:var(--stage-ai)"><span class="n" style="background:var(--stage-ai)">2-2</span>계획-2 · 정합성 검토(AI) — 내용(위험성) 검토</div>
+      <div class="h">내용(위험성) 검토 챗봇 — ⑨ 위험작업 위험성평가(JSA) (서식12)</div>
+      <div class="sub">위험도 점수·개선방향 자동 분석</div>
+
       <div class="card">
         <div style="font-weight:500;margin-bottom:10px">위험도 점수 (빈도 × 강도)</div>
         <table>
@@ -253,13 +321,17 @@
         </ul>
       </div>
       <div style="display:flex;gap:8px">
-        <button class="primary" onclick="showScreen('law')">내용검토 통과 처리</button>
+        <button class="primary" onclick="showScreen('s2_3')">통과 처리 → 법무 검토로</button>
         <button onclick="showScreen('request')">보완요청 (서식22 대조 필요)</button>
       </div>
     </div>
 
-    <div class="screen" id="screen-law">
-      <div class="h">법률검토 챗봇 — ⑨ JSA (서식12)</div>
+
+    <div class="screen" id="screen-s2_3">
+      <div class="stagepill" style="background:var(--stage-ai-bg);color:var(--stage-ai)"><span class="n" style="background:var(--stage-ai)">2-3</span>계획-2 · 정합성 검토(AI) — 법무 검토</div>
+      <div class="h">법무검토 챗봇 — ⑨ JSA 위험성평가 (서식12)</div>
+      <div class="sub">관련 법령 충족 여부 자동 검토</div>
+
       <div class="card">
         <div style="font-weight:500;margin-bottom:8px">질의</div>
         <div style="color:var(--text-secondary)">이 JSA가 위험성평가 실시의무 및 중대재해처벌법상 안전보건 확보의무를 충족하는지 확인해줘.</div>
@@ -274,10 +346,199 @@
           참고 조문: 산업안전보건법 제36조, 중대재해처벌법 시행령 제4조 (법제처 API 연계, 최종 확인은 법무팀 권고)
         </div>
       </div>
-      <div><button class="primary" onclick="showScreen('dashboard')">법률검토 통과 → 승인단계 이관</button></div>
+      <div style="display:flex;gap:8px">
+        <button class="primary" onclick="showScreen('s3')">통과 처리 → 안전관리계획서 검토(현업)로</button>
+        <button onclick="showScreen('request')">보완요청 (법무팀 확인 필요)</button>
+      </div>
     </div>
 
+
+    <div class="screen" id="screen-s3">
+      <div class="stagepill" style="background:var(--stage-review-bg);color:var(--stage-review)"><span class="n" style="background:var(--stage-review)">3</span>계획-3 · 안전관리계획서 검토</div>
+      <div class="h">안전관리계획서 검토 — 현업 안전담당자</div>
+      <div class="sub">⑨ JSA 위험성평가 (서식12) · 보완요청 시 이 단계로 재검토 ↺</div>
+
+      <div class="card">
+        <div style="font-weight:500;margin-bottom:10px">AI 정합성 검토(2-1~2-3) 결과 요약</div>
+        <table>
+          <tr style="color:var(--text-secondary)"><td>단계</td><td style="text-align:right">결과</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>2-1 형식확인</td><td style="text-align:right;color:var(--text-success)">통과</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>2-2 내용(위험성)검토</td><td style="text-align:right;color:var(--text-success)">통과</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>2-3 법무검토</td><td style="text-align:right;color:var(--text-warning)">조건부 통과 · 서식22 교차확인 필요</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <div style="font-weight:500;margin-bottom:8px">현업 안전담당자 종합 검토의견</div>
+        <textarea rows="3" placeholder="검토의견을 입력하세요">서식22 인양하중 대조 확인 후 1차 승인 상신 예정.</textarea>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="primary" onclick="showScreen('s4')">검토 완료 → 1차 승인 상신</button>
+        <button onclick="showScreen('request')">보완요청 (서식22 대조 필요)</button>
+      </div>
+    </div>
+
+
+    <div class="screen" id="screen-s4">
+      <div class="stagepill" style="background:var(--stage-review-bg);color:var(--stage-review)"><span class="n" style="background:var(--stage-review)">4</span>계획-4 · 1차 승인</div>
+      <div class="h">1차 승인 — 현업 PL</div>
+      <div class="sub">⑨ JSA 위험성평가 (서식12) · 현업 안전담당자 검토 완료</div>
+
+      <div class="card">
+        <div style="font-weight:500;margin-bottom:8px">상신 요약</div>
+        <table>
+          <tr style="color:var(--text-secondary)"><td>문서</td><td>⑨ JSA 위험성평가 (서식12)</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>형식확인 · 내용검토 · 법무검토</td><td style="color:var(--text-success)">완료 (AI)</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>현업 안전담당자 검토</td><td style="color:var(--text-success)">완료 (07/18)</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>결재자</td><td>현업 PL · 김O수</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <div style="font-weight:500;margin-bottom:8px">결재 의견</div>
+        <textarea rows="3" placeholder="결재 의견을 입력하세요"></textarea>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="primary" onclick="showScreen('s5')">승인 → 2차 승인으로 이관</button>
+        <button onclick="showScreen('request')">반려 (보완요청)</button>
+      </div>
+    </div>
+
+
+    <div class="screen" id="screen-s5">
+      <div class="stagepill" style="background:var(--stage-review-bg);color:var(--stage-review)"><span class="n" style="background:var(--stage-review)">5</span>계획-5 · 2차 승인</div>
+      <div class="h">2차 승인 — 안전보건 PL</div>
+      <div class="sub">⑨ JSA 위험성평가 (서식12) · 1차 승인 완료 (현업 PL)</div>
+
+      <div class="card">
+        <div style="font-weight:500;margin-bottom:10px">검토 이력 요약</div>
+        <table>
+          <tr style="color:var(--text-secondary)"><td>단계</td><td style="text-align:right">결과</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>2-3 법무검토 (AI)</td><td style="text-align:right;color:var(--text-warning)">조건부 통과 · 서식22 교차확인 필요</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>3 현업 안전담당자 검토</td><td style="text-align:right;color:var(--text-success)">완료</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>4 1차 승인 (현업 PL)</td><td style="text-align:right;color:var(--text-success)">승인</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <div style="font-weight:500;margin-bottom:8px">결재 의견 — 안전보건 PL</div>
+        <textarea rows="3" placeholder="결재 의견을 입력하세요"></textarea>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="primary" onclick="showScreen('s6')">승인 → 정합성 확보로 이관</button>
+        <button onclick="showScreen('request')">반려 (보완요청)</button>
+      </div>
+    </div>
+
+
+    <div class="screen" id="screen-s6">
+      <div class="stagepill" style="background:var(--stage-ai-bg);color:var(--stage-ai)"><span class="n" style="background:var(--stage-ai)">6</span>계획-6 · 정합성 확보</div>
+      <div class="h">정합성 확보 — 전체 승인 완료 확인</div>
+      <div class="sub">마인플랜트 PM31·32 ASA 공사 · 19개 문서그룹</div>
+
+      <div class="card" style="padding:0;overflow:auto">
+        <table>
+          <tr><th>문서</th><th style="text-align:center">형식</th><th style="text-align:center">내용</th><th style="text-align:center">법무</th><th style="text-align:center">현업</th><th style="text-align:center">1차</th><th style="text-align:center">2차</th><th>정합성확보</th></tr>
+          <tr>
+            <td>② 수급업체 공사허가신청</td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td><span class="badge" style="background:var(--bg-success);color:var(--text-success)">확보완료</span></td>
+          </tr>
+          <tr>
+            <td>⑤ 현장대리인 선임계</td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td><span class="badge" style="background:var(--bg-success);color:var(--text-success)">확보완료</span></td>
+          </tr>
+          <tr>
+            <td>⑨ JSA 위험성평가</td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td style="text-align:center;color:var(--text-success)"><i class="ti ti-check"></i></td>
+            <td><span class="badge" style="background:var(--bg-success);color:var(--text-success)">확보완료</span></td>
+          </tr>
+        </table>
+      </div>
+      <div class="card" style="background:var(--bg-success)">
+        <div style="color:var(--text-success);font-weight:500">3건 모두 전체 승인 완료 — 정합성 확보 조건 충족</div>
+      </div>
+      <div><button class="primary" onclick="showScreen('s78')">정합성 확보 완료 → 로그·PDF 저장</button></div>
+    </div>
+
+
+    <div class="screen" id="screen-s78">
+      <div class="stagepill" style="background:var(--stage-log-bg);color:var(--stage-log)"><span class="n" style="background:var(--stage-log)">7</span>계획-7 · 승인정보 로그 / 문서 PDF 저장</div>
+      <div class="h">승인정보 로그 · 문서 PDF 보관</div>
+
+      <div class="card">
+        <div style="font-weight:500;margin-bottom:10px">승인정보 로그</div>
+        <table>
+          <tr style="color:var(--text-secondary)"><td>단계</td><td>처리자</td><td>일시</td><td style="text-align:right">결과</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>형식확인 (2-1)</td><td>System AI</td><td>07/18 09:02</td><td style="text-align:right;color:var(--text-success)">통과</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>내용(위험성)검토 (2-2)</td><td>System AI</td><td>07/18 09:08</td><td style="text-align:right;color:var(--text-success)">통과</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>법무검토 (2-3)</td><td>System AI</td><td>07/18 09:12</td><td style="text-align:right;color:var(--text-success)">통과</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>현업 검토</td><td>안전담당자 박O민</td><td>07/18 10:40</td><td style="text-align:right;color:var(--text-success)">완료</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>1차 승인</td><td>현업 PL 김O수</td><td>07/18 14:05</td><td style="text-align:right;color:var(--text-success)">승인</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>2차 승인</td><td>안전보건 PL 이O진</td><td>07/18 16:30</td><td style="text-align:right;color:var(--text-success)">승인</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:500;margin-bottom:10px">문서 PDF 저장</div>
+        <table>
+          <tr style="color:var(--text-secondary)"><td>문서</td><td>저장 위치</td><td style="text-align:right">상태</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>② 수급업체 공사허가신청.pdf</td><td>보관함 / 2026-07 / 마인플랜트</td><td style="text-align:right;color:var(--text-success)">저장완료</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>⑤ 현장대리인 선임계.pdf</td><td>보관함 / 2026-07 / 마인플랜트</td><td style="text-align:right;color:var(--text-success)">저장완료</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>⑨ JSA 위험성평가.pdf</td><td>보관함 / 2026-07 / 마인플랜트</td><td style="text-align:right;color:var(--text-success)">저장완료</td></tr>
+        </table>
+      </div>
+      <div><button class="primary" onclick="showScreen('s9')">저장 완료 → 출력으로</button></div>
+    </div>
+
+
+    <div class="screen" id="screen-s9">
+      <div class="stagepill" style="background:var(--stage-hard-bg);color:var(--stage-hard)"><span class="n" style="background:var(--stage-hard)">8</span>계획-8 · 출력 (하드카피 발급, 필요시)</div>
+      <div class="h">하드카피 발급</div>
+      <div class="sub">서명·도장 이미지 삽입 후 인쇄용 파일 생성</div>
+
+      <div class="card">
+        <div style="font-weight:500;margin-bottom:8px">대상 문서</div>
+        <select style="width:100%"><option>⑨ JSA 위험성평가 (서식12) — 정합성 확보 완료</option></select>
+      </div>
+
+      <div class="card" style="border:1.5px dashed var(--border-strong);text-align:center;padding:22px 20px">
+        <i class="ti ti-signature" style="font-size:26px;color:var(--text-muted)"></i>
+        <div style="margin-top:8px;font-weight:500">서명·도장 이미지 업로드</div>
+        <div style="color:var(--text-muted);font-size:12px;margin-top:4px">PNG(투명배경) 권장 · 결재란 위치에 자동 삽입됩니다</div>
+        <button class="primary" style="margin-top:14px">이미지 선택</button>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:500;margin-bottom:8px">삽입 위치 미리보기</div>
+        <table>
+          <tr style="color:var(--text-secondary)"><td>결재란</td><td>서명·도장</td><td style="text-align:right">상태</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>현업 PL</td><td>김O수 인</td><td style="text-align:right;color:var(--text-success)">삽입완료</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>안전보건 PL</td><td style="color:var(--text-warning)">대기중</td><td style="text-align:right;color:var(--text-warning)">이미지 필요</td></tr>
+        </table>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="primary">하드카피 인쇄</button>
+        <button onclick="showScreen('dashboard')">임시저장 후 현황판으로</button>
+      </div>
+    </div>
+
+
     <div class="screen" id="screen-request">
+      <div class="stagepill" style="background:var(--bg-danger);color:var(--text-danger)"><span class="n" style="background:var(--text-danger)">↺</span>보완요청 · 계획-3으로 재검토</div>
       <div class="h">보완요청 자동생성 에이전트</div>
       <div class="card">
         <div style="font-weight:500;margin-bottom:8px">대상 문서</div>
@@ -312,7 +573,8 @@ function showScreen(name) {
   document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
   document.querySelectorAll('.navitem').forEach(function(n) { n.classList.remove('active'); });
   document.getElementById('screen-' + name).classList.add('active');
-  document.querySelector('.navitem[data-screen="' + name + '"]').classList.add('active');
+  var nav = document.querySelector('.navitem[data-screen="' + name + '"]');
+  if (nav) nav.classList.add('active');
 }
 </script>
 </body>
