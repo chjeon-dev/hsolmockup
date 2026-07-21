@@ -72,6 +72,7 @@
   <div class="nav">
     <div class="navlabel">AGENT 메뉴</div>
     <div class="navitem active" data-screen="dashboard" onclick="showScreen('dashboard')"><i class="ti ti-chart-bar"></i>현황판</div>
+    <div class="navitem" data-screen="upload" onclick="showScreen('upload')"><i class="ti ti-cloud-upload"></i>안전관리계획서 업로드</div>
     <div class="navitem" data-screen="format" onclick="showScreen('format')"><i class="ti ti-clipboard-check"></i>형식확인</div>
     <div class="navitem" data-screen="content" onclick="showScreen('content')"><i class="ti ti-file-search"></i>내용검토</div>
     <div class="navitem" data-screen="law" onclick="showScreen('law')"><i class="ti ti-scale"></i>법률검토</div>
@@ -187,6 +188,31 @@
       </div>
     </div>
 
+
+    <div class="screen" id="screen-upload">
+      <div class="h">안전관리계획서 업로드</div>
+
+      <div class="card" style="border:1.5px dashed var(--border-strong);text-align:center;padding:28px 20px">
+        <i class="ti ti-cloud-upload" style="font-size:28px;color:var(--text-muted)"></i>
+        <div style="margin-top:8px;font-weight:500">서류를 드래그하거나 클릭하여 업로드</div>
+        <div style="color:var(--text-muted);font-size:12px;margin-top:4px">PDF, JPG, PNG · 32종 서류 한 번에 업로드 가능</div>
+        <button class="primary" style="margin-top:14px">파일 선택</button>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div style="font-weight:500">업로드된 서류 (4/32)</div>
+          <button class="primary" onclick="showScreen('format')">분석 시작</button>
+        </div>
+        <table>
+          <tr style="color:var(--text-secondary)"><td>파일명</td><td>인식된 서식</td><td style="text-align:right">상태</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>KakaoTalk_20260718_01.pdf</td><td>① 안전관리계획서(갑지)</td><td style="text-align:right;color:var(--text-success)">인식완료</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>scan_0032.pdf</td><td>④ 공사일정·인원투입현황</td><td style="text-align:right;color:var(--text-success)">인식완료</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>JSA_최종.pdf</td><td>⑨ JSA 위험성평가</td><td style="text-align:right;color:var(--text-success)">인식완료</td></tr>
+          <tr style="border-top:0.5px solid var(--border)"><td>IMG_4821.jpg</td><td style="color:var(--text-warning)">서식 미인식</td><td style="text-align:right;color:var(--text-warning)">확인 필요</td></tr>
+        </table>
+      </div>
+    </div>
 
     <div class="screen" id="screen-format">
       <div class="h">형식확인 챗봇 — ④ 공사일정 및 인원투입현황 (서식3)</div>
